@@ -1,11 +1,9 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import getTransactionsByAddress from './implementations/transaction_by_address';
 import getTransactionsByValue from './implementations/transaction_by_value';
 import getWales from './implementations/get_wales';
 import getTransactionsByAddressOrdered from './implementations/transaction_by_address_ordered';
 const app = express();
-const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error']});
 
 app.get('/', async (req, res) => {
     res.json({ message: 'Here We Are' });
@@ -13,7 +11,7 @@ app.get('/', async (req, res) => {
 
 app.get('/transaction-ordered/:address', async (req, res) => {
     const { address } = req.params;
-    const transactionByAddress = await getTransactionsByAddressOrdered(address, prisma);
+    const transactionByAddress = await getTransactionsByAddressOrdered(address);
     if (transactionByAddress.error) {
         res.status(500).json({
             error: true,
@@ -29,7 +27,7 @@ app.get('/transaction-ordered/:address', async (req, res) => {
 
 app.get('/transaction/:address', async (req, res) => {
     const { address } = req.params;
-    const transactionByAddress = await getTransactionsByAddress(address, prisma);
+    const transactionByAddress = await getTransactionsByAddress(address);
     if (transactionByAddress.error) {
         res.status(500).json({
             error: true,
@@ -44,9 +42,9 @@ app.get('/transaction/:address', async (req, res) => {
 });
 
 app.get('/transaction-by-value', async (req, res) => {
-    const page = req.query.page
-    const size = req.query.size
-    const transactionsByValue = await getTransactionsByValue(prisma,page, size);
+    const page = req.query.page;
+    const size = req.query.size;
+    const transactionsByValue = await getTransactionsByValue(page, size);
     if (transactionsByValue.error) {
         res.status(500).json({
             error: true,
@@ -61,7 +59,7 @@ app.get('/transaction-by-value', async (req, res) => {
 });
 
 app.get('/wales', async (req, res) => {
-    const wales = await getWales(prisma);
+    const wales = await getWales();
     if (wales.error) {
         res.status(500).json({
             error: true,

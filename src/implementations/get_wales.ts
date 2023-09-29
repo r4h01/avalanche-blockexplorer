@@ -1,43 +1,38 @@
-import { PrismaClient } from '@prisma/client';
+import db from '../modules/db';
 import { Transaction } from '@prisma/client';
 import cChain from '../calls/avaClient';
 
-async function getWales(prisma: PrismaClient) {
+async function getWales() {
     try {
-        const transactionsTo: Transaction[] = await prisma.transaction.findMany(
-            {
-                distinct: ['to'],
-                where: {
-                    value: {
-                        not: '0x0',
-                    },
+        const transactionsTo: Transaction[] = await db.transaction.findMany({
+            distinct: ['to'],
+            where: {
+                value: {
+                    not: '0x0',
                 },
-                orderBy: [
-                    {
-                        value: 'desc',
-                    },
-                ],
-                take: 100,
-            }
-        );
-
-        const transactionsFrom: Transaction[] =
-            await prisma.transaction.findMany({
-                distinct: ['from'],
-                where: {
-                    value: {
-                        not: '0x0',
-                    },
+            },
+            orderBy: [
+                {
+                    value: 'desc',
                 },
-                orderBy: [
-                    {
-                        value: 'desc',
-                    },
-                ],
-                take: 100,
-            });
+            ],
+            take: 100,
+        });
 
-        await prisma.$disconnect();
+        const transactionsFrom: Transaction[] = await db.transaction.findMany({
+            distinct: ['from'],
+            where: {
+                value: {
+                    not: '0x0',
+                },
+            },
+            orderBy: [
+                {
+                    value: 'desc',
+                },
+            ],
+            take: 100,
+        });
 
         const addressArray: {
             to?: string;

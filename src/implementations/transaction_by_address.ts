@@ -1,32 +1,27 @@
-import { PrismaClient } from '@prisma/client';
+import db from '../modules/db';
 import { Transaction } from '@prisma/client';
 
-async function getTransactionsByAddress(address: string, prisma: PrismaClient) {
+async function getTransactionsByAddress(address: string) {
     try {
-        const transactionsFrom: Transaction[] =
-            await prisma.transaction.findMany({
-                where: {
-                    from: address,
-                },
-            });
+        const transactionsFrom: Transaction[] = await db.transaction.findMany({
+            where: {
+                from: address,
+            },
+        });
 
-        const transactionsTo: Transaction[] = await prisma.transaction.findMany(
-            {
-                where: {
-                    to: address,
+        const transactionsTo: Transaction[] = await db.transaction.findMany({
+            where: {
+                to: address,
+            },
+            orderBy: [
+                {
+                    blockNumber: 'desc',
                 },
-                orderBy: [
-                    {
-                        blockNumber: 'desc',
-                    },
-                    {
-                        transactionIndex: 'desc',
-                    },
-                ],
-            }
-        );
-
-        await prisma.$disconnect();
+                {
+                    transactionIndex: 'desc',
+                },
+            ],
+        });
 
         if (transactionsFrom.length > 0 || transactionsTo.length > 0) {
             return {
@@ -44,7 +39,6 @@ async function getTransactionsByAddress(address: string, prisma: PrismaClient) {
         }
     } catch (error) {
         console.error(error);
-        await prisma.$disconnect();
 
         return {
             error: true,

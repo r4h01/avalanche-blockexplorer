@@ -1,19 +1,17 @@
-import { PrismaClient } from '@prisma/client';
+import db from '../modules/db';
 import { Transaction } from '@prisma/client';
 
-async function getTransactionsByValue(prisma: PrismaClient, page: string, size: string) {
+async function getTransactionsByValue(page: string, size: string) {
     try {
-        const transactions: Transaction[] = await prisma.transaction.findMany({
+        const transactions: Transaction[] = await db.transaction.findMany({
             skip: parseInt(page),
-            take: parseInt(size),            
+            take: parseInt(size),
             orderBy: [
                 {
                     value: 'desc',
                 },
             ],
         });
-
-        await prisma.$disconnect();
 
         if (transactions.length > 0) {
             return {
@@ -28,8 +26,6 @@ async function getTransactionsByValue(prisma: PrismaClient, page: string, size: 
         }
     } catch (error) {
         console.error(error);
-
-        await prisma.$disconnect();
 
         return {
             error: true,

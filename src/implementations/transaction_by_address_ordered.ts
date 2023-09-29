@@ -1,40 +1,35 @@
-import { PrismaClient } from '@prisma/client';
+import db from '../modules/db';
 import { Transaction } from '@prisma/client';
 
-async function getTransactionsByAddressOrdered(address: string, prisma: PrismaClient) {
+async function getTransactionsByAddressOrdered(address: string) {
     try {
-        const transactionsFrom: Transaction[] =
-            await prisma.transaction.findMany({
-                where: {
-                    from: address,
+        const transactionsFrom: Transaction[] = await db.transaction.findMany({
+            where: {
+                from: address,
+            },
+            orderBy: [
+                {
+                    blockNumber: 'desc',
                 },
-                orderBy: [
-                    {
-                        blockNumber: 'desc',
-                    },
-                    {
-                        transactionIndex: 'desc',
-                    },
-                ],
-            });
-
-        const transactionsTo: Transaction[] = await prisma.transaction.findMany(
-            {
-                where: {
-                    to: address,
+                {
+                    transactionIndex: 'desc',
                 },
-                orderBy: [
-                    {
-                        blockNumber: 'desc',
-                    },
-                    {
-                        transactionIndex: 'desc',
-                    },
-                ],
-            }
-        );
+            ],
+        });
 
-        await prisma.$disconnect();
+        const transactionsTo: Transaction[] = await db.transaction.findMany({
+            where: {
+                to: address,
+            },
+            orderBy: [
+                {
+                    blockNumber: 'desc',
+                },
+                {
+                    transactionIndex: 'desc',
+                },
+            ],
+        });
 
         if (transactionsFrom.length > 0 || transactionsTo.length > 0) {
             return {
@@ -52,7 +47,6 @@ async function getTransactionsByAddressOrdered(address: string, prisma: PrismaCl
         }
     } catch (error) {
         console.error(error);
-        await prisma.$disconnect();
 
         return {
             error: true,
