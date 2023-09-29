@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
             table.string('gas');
             table.string('gasPrice');
             table.string('maxFeePerGas').nullable();
-            table.string('maxPriorityFeePerGas').notNullable();
+            table.string('maxPriorityFeePerGas').nullable();
             table.specificType('input', 'VARCHAR');
             table.string('nonce');
             table.string('r');
