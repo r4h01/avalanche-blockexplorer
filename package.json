@@ -9,7 +9,7 @@
     "db:migrate": "knex migrate:latest",
     "docker:db:migrate": "docker compose run backend pnpm db:migrate",
     "docker:db:migrate:undo": "docker compose run backend pnpx knex migrate:down",
-    "populate": "docker compose run backend && pnpm run build && node ./src/implementations/get_latest_transactions.ts",
+    "populate": "docker compose run backend node ./dist/implementations/get_latest_transactions.js",
     "rebuild:be": "docker compose build backend && docker compose rm --force --stop backend && docker compose up -d backend",
     "start": "node dist/index.js",
     "start:docker": "pnpm run build && node --inspect=0.0.0.0 dist/index.js"

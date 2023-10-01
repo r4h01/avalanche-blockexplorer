@@ -32,13 +32,19 @@ docker compose bulid
 ```cmd
 pnpm docker:db:migrate
 ```
-3. to boot the Docker Compose stack
-```cmd
-docker compose up
-```
-4. for stating the database populations of the last 10.000 blocks transactions
+3. for stating the database populations of the last 10.000 blocks transactions
 ```cmd
 pnpm populate
+```
+###### It will take some time for retreiving all the necessary data.
+
+###### Anyway you can open another terminal and run the next command (docker compose up) and start to call the APIs.
+###### I raccomand you to let the populate command to finish it's process for testing all the APIs.
+###### In any case you can try to call the first one API (http://localhost:5000/transaction-by-value?page=0&size=10) and get the first ten transactions.
+
+4. to boot the Docker Compose stack
+```cmd
+docker compose up
 ```
 
 #### Note:
