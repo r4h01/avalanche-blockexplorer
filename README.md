@@ -67,4 +67,4 @@ I have set some recommended extensions, one of this, it will rebuild the Docker 
 
 * List of 100 address with the highest balace:
 
-    http://localhost:5000/whales
+    http://localhost:5000/wales
