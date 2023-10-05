@@ -1,8 +1,8 @@
 import express from 'express';
 import getTransactionsByAddress from './implementations/transaction_by_address';
 import getTransactionsByValue from './implementations/transaction_by_value';
+import getWales from './implementations/get_wales';
 import getTransactionsByAddressOrdered from './implementations/transaction_by_address_ordered';
-import getWhales from './implementations/get_whales';
 const app = express();
 
 app.get('/', async (req, res) => {
@@ -58,8 +58,8 @@ app.get('/transaction-by-value', async (req, res) => {
     });
 });
 
-app.get('/whales', async (req, res) => {
-    const wales = await getWhales();
+app.get('/wales', async (req, res) => {
+    const wales = await getWales();
     if (wales.error) {
         res.status(500).json({
             error: true,

@@ -1,11 +1,11 @@
 import cChain from '../calls/avaClient';
 import { PrismaClient } from '@prisma/client';
 import { Transaction } from '@prisma/client';
-const prisma = new PrismaClient({
-    log: ['query', 'info', 'warn', 'error'],
-});
 
 async function getLatestTransactions() {
+    const prisma = new PrismaClient({
+        log: ['query', 'info', 'warn', 'error'],
+    });
     try {
         const latestBlock = await cChain.callMethod(
             'eth_getBlockByNumber',
@@ -58,12 +58,16 @@ async function getLatestTransactions() {
             });
         }
 
+        await prisma.$disconnect();
+
         return {
             error: false,
             data: 'Transactions added',
         };
     } catch (error) {
         console.error(error);
+
+        await prisma.$disconnect();
         process.exit(1);
     }
 }

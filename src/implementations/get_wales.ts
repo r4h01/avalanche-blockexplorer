@@ -2,7 +2,7 @@ import db from '../modules/db';
 import { Transaction } from '@prisma/client';
 import cChain from '../calls/avaClient';
 
-async function getWhales() {
+async function getWales() {
     try {
         const transactionsTo: Transaction[] = await db.transaction.findMany({
             distinct: ['to'],
@@ -55,9 +55,9 @@ async function getWhales() {
             }
         });
 
-        const whalesArray = [];
+        let walesArray = [];
         for (let i = 0; i < addressArray.length; i++) {
-            const balance = await cChain.callMethod(
+            let balance = await cChain.callMethod(
                 'eth_getBalance',
                 [
                     addressArray[i].to
@@ -69,26 +69,26 @@ async function getWhales() {
             );
             addressArray[i].balance = parseInt(balance.data.result, 16);
             if (addressArray[i].balance && addressArray[i].balance > 0) {
-                whalesArray.push(addressArray[i]);
+                walesArray.push(addressArray[i]);
             }
         }
 
-        whalesArray.sort((a, b) => {
+        walesArray.sort((a, b) => {
             return b.balance - a.balance;
         });
 
         return {
             error: false,
-            data: whalesArray.slice(0, 100),
+            data: walesArray.slice(0, 100),
         };
     } catch (error) {
         console.error(error);
 
         return {
             error: true,
-            message: `error in getWhales ${error}`,
+            message: `error in getWales ${error}`,
         };
     }
 }
 
-export default getWhales;
+export default getWales;
